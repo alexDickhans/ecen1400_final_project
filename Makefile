@@ -4,7 +4,7 @@ CFLAGS = -Wall -Wextra -std=c11 -pedantic -g -Iinclude
 SRCDIR = src
 OBJDIR = obj
 
-SOURCES = main.c factory.c resources.c utils.c
+SOURCES = main.c factory.c resources.c utils.c help.c inventory.c power.c
 OBJECTS = $(SOURCES:%.c=$(OBJDIR)/%.o)
 
 .PHONY: all clean
