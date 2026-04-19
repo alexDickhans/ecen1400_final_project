@@ -2,7 +2,7 @@
 // Created by Alexander Dickhans on 4/18/26.
 //
 
-#include "factory.h"
+#include "factory/factory.h"
 
 #include <stdlib.h>
 

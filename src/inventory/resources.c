@@ -2,7 +2,7 @@
 // Created by Alexander Dickhans on 4/18/26.
 //
 
-#include "resources.h"
+#include "inventory/resources.h"
 
 #include <stdlib.h>
 

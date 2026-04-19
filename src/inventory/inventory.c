@@ -2,7 +2,7 @@
 // Created by Alexander Dickhans on 4/18/26.
 //
 
-#include "inventory.h"
+#include "inventory/inventory.h"
 
 #include <stdlib.h>
 

@@ -2,7 +2,7 @@
 // Created by Alexander Dickhans on 4/18/26.
 //
 
-#include "power.h"
+#include "inventory/power.h"
 
 #include <stdlib.h>
 

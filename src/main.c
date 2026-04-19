@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 
-#include "utils.h"
+#include "misc/utils.h"
 
 int main(void) {
     printf("Hello, World!\n");
