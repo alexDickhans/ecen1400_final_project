@@ -36,6 +36,10 @@ All the interactions are done through the command line with a single character.
 
 Build with `make` (see `Makefile` for objects and flags).
 
+### Testing
+
+Test with `make test`, builds and runs unit tests automatically.
+
 ### Memory leaks
 
 Tested with apple's native tool `leaks` and no leaks were found during this testing!
