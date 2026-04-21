@@ -107,7 +107,3 @@ void destroy_player(Player *player) {
         free(player);
     }
 }
-
-void test_player() {
-
-}
