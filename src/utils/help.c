@@ -10,7 +10,6 @@ void print_general_help(void) {
     printf("\n");
     printf("Commands (single key, raw terminal):\n");
     printf("  h  help — print this menu\n");
-    printf("  u  unit tests\n");
     printf("  s  show factories — list factories you own\n");
     printf("  p  pickle — manual click; earn pickles\n");
     printf("  x  exit — quit the game\n");

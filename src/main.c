@@ -37,7 +37,7 @@ int main(void) {
     while (running) {
         print_player_status(player);
         printf("Options: ");
-        printf("(h)elp: print help menu, (u)nit tests, (s)how factories, (p)ickle: Pickle!, e(x)it\n");
+        printf("(h)elp: print help menu, (s)how factories, (p)ickle: Pickle!, e(x)it\n");
         print_options_factory_shop(factory_shop, factory_menu_start_char);
 
         ret = poll(&character_poll, 1, 1000);
@@ -56,9 +56,6 @@ int main(void) {
                 case 'x':
                     // Exit
                     running = false;
-                    break;
-                case 'u':
-                    // Run Unit tests
                     break;
                 case 'h':
                     print_general_help();
