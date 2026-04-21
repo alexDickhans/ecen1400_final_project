@@ -7,13 +7,10 @@ OBJDIR = obj
 SOURCES = \
 	main.c \
 	factory/factory.c \
-	factory/recipe.c \
-	inventory/inventory.c \
-	inventory/power.c \
-	inventory/resources.c \
-	misc/help.c \
-	misc/utils.c \
-	smelter/smelter.c
+	factory/factory_shop.c \
+	player.c \
+	utils/help.c \
+	utils/utils.c \
 
 OBJECTS = $(SOURCES:%.c=$(OBJDIR)/%.o)
 

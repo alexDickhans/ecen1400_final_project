@@ -2,31 +2,108 @@
 // Created by Alexander Dickhans on 4/18/26.
 //
 
+#include <stdbool.h>
 #include <stdio.h>
+#include "player.h"
+#include "utils/utils.h"
+#include "factory/factory.h"
+#include "factory/factory_shop.h"
+#include <poll.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-#include "misc/utils.h"
+#include "utils/help.h"
 
 int main(void) {
-    printf("Hello, World!\n");
+    bool running = true;
+    const char factory_menu_start_char = 'c';
 
-    char c;
+    struct termios orig_termios;
 
-    while (scanf(" %c", &c) == 1) {
-        switch (c) {
-            case 'c':
-                clearScreen();
-                break;
-            case 'p':
-                printf("Hello World\n");
-                break;
-            case 'x':
-                clean_exit();
-                return 0;
-            default:
-                printf("unknown command\n");
-                break;
+    // Call this at the very beginning of your program, before the while loop
+    enable_raw_mode(&orig_termios);
+
+    const FactoryPrototype factories[] = {
+        {"Jr. Pickler", 15, 0.1}, {"Sr. Pickler", 100, 1.0}, {"Pickle Farm", 1100, 8.0},
+        {"Pickle Factory", 15000, 100.0}, {"Pickle World", 120000, 1000.0}
+    };
+
+    FactoryShop *factory_shop = create_factory_shop(factories, 5);
+
+    Player *player = create_player();
+
+    struct pollfd character_poll = {STDIN_FILENO, POLLIN, 0};
+    int ret = 0;
+    while (running) {
+        print_player_status(player);
+        printf("Options: ");
+        printf("(h)elp: print help menu, (u)nit tests, (s)how factories, (p)ickle: Pickle!, e(x)it\n");
+        print_options_factory_shop(factory_shop, factory_menu_start_char);
+
+        ret = poll(&character_poll, 1, 1000);
+
+        clear_screen();
+
+        if (ret > 0) {
+            char c;
+
+            read(STDIN_FILENO, &c, 1);
+
+            switch (c) {
+                case 'p':
+                    click_pickle(player);
+                    break;
+                case 'x':
+                    // Exit
+                    running = false;
+                    break;
+                case 'u':
+                    // Run Unit tests
+                    break;
+                case 'h':
+                    print_general_help();
+                    break;
+                case 'y': // Sneaky cheats!!!!
+                    for (int i = 0; i < 10000000; ++i) {
+                        click_pickle(player);
+                    }
+                    break;
+                case 's':
+                    print_all_factories(player);
+                    break;
+                default: {
+                    const FactoryPrototype *factory_prototype = get_option_factory_shop(
+                        factory_shop, factory_menu_start_char, c);
+
+                    if (factory_prototype) {
+                        const int res = buy_factory(player, factory_prototype);
+
+                        switch (res) {
+                            case 0:
+                                printf("Bought: %s\n", factory_prototype->name);
+                                break;
+                            case -1:
+                                printf("Unable to purchase %s, inadequate pickles.\n", factory_prototype->name);
+                                break;
+                            default:
+                                printf("Error, exiting\n");
+                                running = false;
+                        }
+                    } else {
+                        printf("unknown command\n");
+                    }
+                    break;
+                }
+            }
+        } else {
+            update_score(player);
         }
     }
+
+    show_score(0);
+    disable_raw_mode(&orig_termios);
+    destroy_player(player);
+    destroy_factory_shop(factory_shop);
 
     return 0;
 }
