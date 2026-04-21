@@ -11,6 +11,7 @@
 #include <poll.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "utils/help.h"
 
@@ -32,11 +33,25 @@ int main(void) {
 
     Player *player = create_player();
 
+    if (!factory_shop || !player) {
+        printf("Unable to allocate game elements.\n");
+        return 0;
+    }
+
+    srand(time(NULL));
+
     struct pollfd character_poll = {STDIN_FILENO, POLLIN, 0};
     int ret = 0;
     while (running) {
+        bool golden_pickle_mode = rand() % 100 < 10; // 3% chance of being true
+
+        if (golden_pickle_mode) {
+            printf("Golden Pickle Mode, press (z) to pick up 50 pickles\n");
+        }
+
         print_player_status(player);
         printf("Options: ");
+        
         printf("(h)elp: print help menu, (s)how factories, (p)ickle: Pickle!, e(x)it\n");
         print_options_factory_shop(factory_shop, factory_menu_start_char);
 
@@ -51,7 +66,7 @@ int main(void) {
 
             switch (c) {
                 case 'p':
-                    click_pickle(player);
+                    click_pickle(player, 1);
                     break;
                 case 'x':
                     // Exit
@@ -60,10 +75,15 @@ int main(void) {
                 case 'h':
                     print_general_help();
                     break;
-                case 'y': // Sneaky cheats!!!!
-                    for (int i = 0; i < 10000000; ++i) {
-                        click_pickle(player);
+                case 'z':
+                    if (golden_pickle_mode) {
+                        click_pickle(player, 50 + get_score_player(player)/10);
+                    } else {
+                        printf("Golden Pickle Mode is not active\n");
                     }
+                    break;
+                case 'y': // Sneaky cheats!!!!
+                    click_pickle(player, 10000000);
                     break;
                 case 's':
                     print_all_factories(player);

@@ -7,7 +7,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <_string.h>
+#include <string.h>
 
 struct _factory {
     char *name;
@@ -30,6 +30,10 @@ FactoryNode *create_factory(const FactoryPrototype *factory_prototype, FactoryNo
 }
 
 int update_factory(FactoryNode *factory) {
+    if (factory == NULL) {
+        return -1;
+    }
+
     factory->temp_sum += factory->rate;
 
     const float res = floor(factory->temp_sum+0.01);

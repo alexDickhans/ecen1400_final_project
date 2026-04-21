@@ -26,6 +26,11 @@ FactoryShop *create_factory_shop(const FactoryPrototype *prototypes, const int l
 }
 
 void print_options_factory_shop(const FactoryShop *factory_shop, const char start_char) {
+    if (factory_shop == NULL) {
+        printf("No factory shop to print options for\n");
+        return;
+    }
+
     for (int i = 0; i < factory_shop->prototypes_len; ++i) {
         printf("(%c): %s, rate: %.1f, for %d pickles\n", start_char + i, factory_shop->prototypes[i].name,
                factory_shop->prototypes[i].rate, factory_shop->prototypes[i].cost);
@@ -43,6 +48,8 @@ FactoryPrototype *get_option_factory_shop(const FactoryShop *factory_shop, const
 }
 
 void destroy_factory_shop(FactoryShop *factory_shop) {
-    free(factory_shop->prototypes);
-    free(factory_shop);
+    if (factory_shop) {
+        free(factory_shop->prototypes);
+        free(factory_shop);
+    }
 }

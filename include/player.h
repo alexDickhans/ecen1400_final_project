@@ -11,7 +11,7 @@ typedef struct _player Player;
 
 Player* create_player(void);
 
-void click_pickle(Player* player);
+void click_pickle(Player* player, const int n);
 
 int get_score_player(const Player* player);
 

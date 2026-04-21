@@ -24,9 +24,9 @@ Player *create_player(void) {
     return player;
 }
 
-void click_pickle(Player *player) {
+void click_pickle(Player *player, const int n) {
     if (player) {
-        player->current_balance++;
+        player->current_balance += n;
     }
 }
 
@@ -71,6 +71,9 @@ void update_score(Player *player) {
         FactoryNode *next = player->head;
         while (next) {
             const int res = update_factory(next);
+            if (res < 0) {
+                return;
+            }
             player->current_balance += res;
             next = next_factory(next);
         }

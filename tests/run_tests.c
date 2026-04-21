@@ -103,8 +103,8 @@ static void test_player_click_and_score(void) {
     Player *p = create_player();
     EXPECT_PTR_NON_NULL(p, "player allocates");
     EXPECT_INT_EQ(get_score_player(p), 0, "initial score 0");
-    click_pickle(p);
-    click_pickle(p);
+    click_pickle(p, 1);
+    click_pickle(p, 1);
     EXPECT_INT_EQ(get_score_player(p), 2, "clicks add to balance");
     EXPECT_INT_EQ(get_score_player(NULL), -1, "NULL player score");
     destroy_player(p);
@@ -114,14 +114,14 @@ static void test_player_buy_factory(void) {
     Player *p = create_player();
     const FactoryPrototype cheap = {"mini", 5, 1.0};
     for (int i = 0; i < 4; i++) {
-        click_pickle(p);
+        click_pickle(p, 1);
     }
     EXPECT_INT_EQ(buy_factory(p, &cheap), -1, "cannot afford");
     destroy_player(p);
 
     p = create_player();
     for (int i = 0; i < 10; i++) {
-        click_pickle(p);
+        click_pickle(p, 1);
     }
     EXPECT_INT_EQ(get_score_player(p), 10, "saved up");
     const FactoryPrototype f = {"plant", 7, 2.0};
