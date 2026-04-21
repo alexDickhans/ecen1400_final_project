@@ -35,3 +35,7 @@ All the interactions are done through the command line with a single character.
 * `src/` — implementations matching the headers above (`main.c` entry point).
 
 Build with `make` (see `Makefile` for objects and flags).
+
+### Memory leaks
+
+Tested with apple's native tool `leaks` and no leaks were found during this testing!

@@ -33,37 +33,54 @@ int main(void) {
 
     Player *player = create_player();
 
+    // Check for missed allocation
     if (!factory_shop || !player) {
+        destroy_factory_shop(factory_shop);
+        destroy_player(player);
         printf("Unable to allocate game elements.\n");
         return 0;
     }
 
+    // Generate random numbers
     srand(time(NULL));
 
+    // Create poll object for easier use
     struct pollfd character_poll = {STDIN_FILENO, POLLIN, 0};
-    int ret = 0;
-    while (running) {
-        bool golden_pickle_mode = rand() % 100 < 10; // 3% chance of being true
 
+    // Infinite loop while running
+    while (running) {
+        bool golden_pickle_mode = rand() % 100 < 10; // 10% chance of being true
+
+        // Show golden pickle message
         if (golden_pickle_mode) {
-            printf("Golden Pickle Mode, press (z) to pick up 50 pickles\n");
+            printf("Golden Pickle Mode, press (z) to pick up %d pickles\n", 50+get_score_player(player)/3);
         }
 
+        // Print player options and status
         print_player_status(player);
         printf("Options: ");
-        
         printf("(h)elp: print help menu, (s)how factories, (p)ickle: Pickle!, e(x)it\n");
         print_options_factory_shop(factory_shop, factory_menu_start_char);
 
-        ret = poll(&character_poll, 1, 1000);
+        // Poll for characters
+        const int ret = poll(&character_poll, 1, 1000);
 
         clear_screen();
 
         if (ret > 0) {
+            // Read a character from the command line
             char c;
 
-            read(STDIN_FILENO, &c, 1);
+            const ssize_t read_ret = read(STDIN_FILENO, &c, 1);
 
+            // Check for errors
+            if (read_ret < 0) {
+                printf("IO error, exiting\n");
+                running = false;
+                break;
+            }
+
+            // Switch based on the input character
             switch (c) {
                 case 'p':
                     click_pickle(player, 1);
@@ -76,25 +93,27 @@ int main(void) {
                     print_general_help();
                     break;
                 case 'z':
+                    // Golden pickle mode
                     if (golden_pickle_mode) {
-                        click_pickle(player, 50 + get_score_player(player)/10);
+                        click_pickle(player, 50 + get_score_player(player)/3);
                     } else {
                         printf("Golden Pickle Mode is not active\n");
                     }
-                    break;
-                case 'y': // Sneaky cheats!!!!
-                    click_pickle(player, 10000000);
                     break;
                 case 's':
                     print_all_factories(player);
                     break;
                 default: {
+                    // Check for the factory prototype selection
                     const FactoryPrototype *factory_prototype = get_option_factory_shop(
                         factory_shop, factory_menu_start_char, c);
 
+                    // Check for null
                     if (factory_prototype) {
+                        // Buy the factory
                         const int res = buy_factory(player, factory_prototype);
 
+                        // Check for error in purchase
                         switch (res) {
                             case 0:
                                 printf("Bought: %s\n", factory_prototype->name);
@@ -107,17 +126,23 @@ int main(void) {
                                 running = false;
                         }
                     } else {
-                        printf("unknown command\n");
+                        printf("unknown command, try (h) for the help menu.\n");
                     }
                     break;
                 }
             }
-        } else {
+        } else if (ret == 0) {
+            // Update the score every second
             update_score(player);
+        } else {
+            // Return gracefully on error
+            printf("Error handling input, exiting ...\n");
+            running = false;
         }
     }
 
-    show_score(0);
+    // Clean exit
+    show_score(get_score_player(player));
     disable_raw_mode(&orig_termios);
     destroy_player(player);
     destroy_factory_shop(factory_shop);
